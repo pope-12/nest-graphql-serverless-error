@@ -86,5 +86,6 @@ offline: Failure: Schema must contain uniquely named types but contains multiple
 * My schema.gql file is in src, but my built app in dist. However, if that was an issue I would think the app wouldn't work even if I removed the TestEntity reference in the User entity file, but it works if I do that. Also moving the file to dist didn't seem to do anything in my tests other than move where it was generated
 
 My environment
-Running node 12.22.1
-Nest 8.0.5
+* Running node 12.22.1
+* Nest 8.0.5
+* Windows WSL2 subsystem for linux Ubuntu 20.04.2
