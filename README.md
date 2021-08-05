@@ -1,6 +1,23 @@
 # Nest GraphQL code first Serverless Error
 `Error: Schema must contain uniquely named types but contains multiple types named "Testing"`
 
+## *** Resolution: 
+set --allowCache when running [serverless-offline](https://www.npmjs.com/package/serverless-offline#usage-and-command-line-options)
+(see package.json `serverless` script)
+
+I finally figured this out using the debugger stepping through the nestjs/graphql code, 
+I saw that every time I hit my URL, that Testing was added to the 
+[OrphanedReferenceRegistry](https://github.com/nestjs/graphql/blob/master/lib/schema-builder/services/orphaned-reference.registry.ts)
+which then was used in the 
+[GraphQLSchema constructor](https://github.com/nestjs/graphql/blob/master/lib/schema-builder/graphql-schema.factory.ts#L66)
+
+So I took a look at my main.ts to see why that might be, and realized the variable `server` was never cached, but always reloaded 
+the `bootstrap()` function. At that point it didn't take long for me to end up on the serverless-online docs again, where I noticed the option
+--allowCache option, tried it and it worked.
+
+I am still not sure why the `server` variable wasn't cached, but the OrphanedReferenceRegistry was when I didn't have that flag turned on.
+
+## Original writeup
 Objective: Run a nest graphql code-first application using serverless, and use ObjectType within another to generate a schema like this
 ```graphql
 type Testing {
